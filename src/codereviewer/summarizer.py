@@ -16,7 +16,7 @@ async def summarize_changes(diff: str) -> dict:
     Returns:
         A dictionary containing the summary, has_critical_issues, and number_of_changes.
     """
-    llm = ChatOpenAI(model="gpt-5-mini", temperature=0)
+    llm = ChatOpenAI(model="gpt-5-mini")
     structured_llm = llm.with_structured_output(SummaryOutput)
     prompt = get_summarizer_prompt(diff)
     response = structured_llm.invoke(prompt)

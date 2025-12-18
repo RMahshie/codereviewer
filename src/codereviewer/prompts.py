@@ -52,14 +52,19 @@ Review this pull request diff.
 ## Diff
 {diff}
 
-Look for:
-- Syntax errors or typos
-- Naming convention violations (casing, clarity, consistency)
-- Logic that could break under edge cases
-- Deviations from industry best practices
-- Security or performance concerns
+Report issues that would cause bugs, crashes, security vulnerabilities, or significant maintainability problems.
 
-Respond with issues found. If none, say "No issues found."
+Examples of what to report:
+- Security: auth.py:14 - SQL injection via f-string: user input directly in query
+- Logic: utils.py:23 - Division without zero check will crash
+- Complexity: service.py:45 - 150-line function with 8 nested conditions, hard to maintain
+
+Examples of what NOT to report:
+- "Variable 'x' could be more descriptive" (minor naming)
+- "Consider adding type hints" (enhancement, not issue)
+- "Unused import" (unless it indicates a missing implementation)
+
+If no real issues, say "No issues found."
 
 Format:
 - [Category]: [File:Line] - [Issue and why it matters]
