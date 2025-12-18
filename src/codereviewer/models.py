@@ -11,9 +11,7 @@ class Issue(BaseModel):
 
 class ReviewOutput(BaseModel):
     issues: list[Issue]
-    has_critical_issues: bool
 
 class SummaryOutput(BaseModel):
     summary: str
-    has_critical_issues: bool
     number_of_changes: int

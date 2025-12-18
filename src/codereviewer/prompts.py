@@ -36,9 +36,24 @@ Do NOT:
 </requirements>
 
 <output format>
-Output format (max 45 lines):
-## Critical Issues
-- [Issue]: [File:Line] - [Impact]
+Output ONLY valid JSON in this exact format (no markdown, no explanation text):
+{
+  "issues": [
+    {
+      "category": "Security|Logic|Performance|Maintainability",
+      "file": "path/to/file.py",
+      "line": 123,
+      "issue": "Brief description of the issue",
+      "impact": "Why this matters / what could go wrong",
+      "recommendation": "How to fix it"
+    }
+  ]
+}
+
+If no critical issues found, return:
+{
+  "issues": []
+}
 </output format>
 """
 

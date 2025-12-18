@@ -29,12 +29,10 @@ async def test_summarizer_structure():
     
     # Check structure
     assert "summary" in result, "Missing 'summary' field"
-    assert "has_critical_issues" in result, "Missing 'has_critical_issues' field"
     assert "number_of_changes" in result, "Missing 'number_of_changes' field"
     
     # Check types
     assert isinstance(result["summary"], str), "summary should be string"
-    assert isinstance(result["has_critical_issues"], bool), "has_critical_issues should be bool"
     assert isinstance(result["number_of_changes"], int), "number_of_changes should be int"
     
     print(f"✅ Summarizer structure test passed!")
@@ -53,9 +51,7 @@ async def test_simple_reviewer_structure():
     
     # Check top-level structure
     assert "issues" in result, "Missing 'issues' field"
-    assert "has_critical_issues" in result, "Missing 'has_critical_issues' field"
     assert isinstance(result["issues"], list), "issues should be a list"
-    assert isinstance(result["has_critical_issues"], bool), "has_critical_issues should be bool"
     
     print(f"✅ Reviewer structure test passed!")
     print(f"   Found {len(result['issues'])} issues")

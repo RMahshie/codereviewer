@@ -15,9 +15,11 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
             summary: The summary of the changes.
 
         Returns:
-            A dictionary containing the issues and has_critical_issues.
+            A dictionary containing the issues.
     """
     cwd = os.getcwd()
+    raw_review = None
+    
     async for message in query(
         prompt=get_complex_review_prompt(cwd, diff, summary),
         options=ClaudeAgentOptions(
@@ -25,7 +27,7 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
             system_prompt="You are a fast code reviewer. Complete reviews with minimum tool calls. Do not over-investigate. Write findings immediately after seeing the diff.",
             allowed_tools=["Write", "Grep", "Bash"],
             permission_mode="acceptEdits",
-            max_turns=6,
+            max_turns=8,
             cwd=cwd
         )
     ):
@@ -48,6 +50,24 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
                         print(f"Total Turns: {message.num_turns}")
                     if hasattr(message, 'total_cost_usd'):
                         print(f"Total Cost: {message.total_cost_usd}")
+                    raw_review = message.result
+    
+    # Parse Claude's JSON output with GPT-4o-mini for validation
+    llm = ChatOpenAI(model="gpt-5o-mini")
+    structured_llm = llm.with_structured_output(ReviewOutput)
+    
+    prompt = f"""Extract and validate the code review issues from this JSON output.
+If the JSON is malformed, do your best to extract the issues:
+
+{raw_review}
+
+Return in the required structured format."""
+    
+    response = structured_llm.invoke(prompt)
+    
+    return {
+        "issues": [issue.model_dump() for issue in response.issues]
+    }
 
 
 async def review_simple_changes(diff: str, summary: str) -> dict:
@@ -60,13 +80,12 @@ async def review_simple_changes(diff: str, summary: str) -> dict:
             summary: The summary of the changes.
 
         Returns:
-            A dictionary containing the issues and has_critical_issues.
+            A dictionary containing the issues.
     """
     llm = ChatOpenAI(model="gpt-5-mini")
     structured_llm = llm.with_structured_output(ReviewOutput)
     prompt = get_simple_review_prompt(diff, summary)
     response = structured_llm.invoke(prompt)
     return {
-        "issues": [issue.model_dump() for issue in response.issues],
-        "has_critical_issues": response.has_critical_issues
+        "issues": [issue.model_dump() for issue in response.issues]
     }
