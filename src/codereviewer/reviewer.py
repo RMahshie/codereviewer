@@ -24,10 +24,10 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
         prompt=get_complex_review_prompt(cwd, diff, summary),
         options=ClaudeAgentOptions(
             model="claude-haiku-4-5-20251001",
-            system_prompt="You are a fast code reviewer. Complete reviews with minimum tool calls. Do not over-investigate. Write findings immediately after seeing the diff.",
+            system_prompt="You are a fast code reviewer. Investigate quickly, then output JSON results. Your FINAL message must be pure JSON only - no explanation, no markdown.",
             allowed_tools=["Write", "Grep", "Bash"],
             permission_mode="acceptEdits",
-            max_turns=8,
+            max_turns=15,
             cwd=cwd
         )
     ):

@@ -8,8 +8,9 @@ Working directory: {cwd} (repo root)
 <instructions>
 Review changes from the diff. The summary describes the intent of the changes at a high level. 
 Focus on finding issues not covered in the summary and high level flow breaks that are critical.
-Return a list of critical observations that need to be addressed.
-You have exactly 8 turns to complete this task and return the results immediately.
+
+CRITICAL: You have 12 turns MAX. Your FINAL response MUST be ONLY the JSON output specified below.
+Do NOT explain your findings in text - investigation is for gathering context, but your final output must be pure JSON.
 </instructions>
 
 </steps>
@@ -36,7 +37,7 @@ Do NOT:
 </requirements>
 
 <output format>
-Output ONLY valid JSON in this exact format (no markdown, no explanation text):
+YOUR FINAL RESPONSE MUST BE ONLY THIS JSON (no markdown, no explanations, no code blocks):
 {{
   "issues": [
     {{
@@ -50,10 +51,12 @@ Output ONLY valid JSON in this exact format (no markdown, no explanation text):
   ]
 }}
 
-If no critical issues found, return:
+If no critical issues found, your final response must be:
 {{
   "issues": []
 }}
+
+REMINDER: Your last message must be ONLY the JSON above. Nothing else.
 </output format>
 """
 
