@@ -53,7 +53,7 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
                     raw_review = message.result
     
     # Parse Claude's JSON output with GPT-4o-mini for validation
-    llm = ChatOpenAI(model="gpt-5o-mini")
+    llm = ChatOpenAI(model="gpt-5-mini")
     structured_llm = llm.with_structured_output(ReviewOutput)
     
     prompt = f"""Extract and validate the code review issues from this JSON output.
