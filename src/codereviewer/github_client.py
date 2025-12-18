@@ -49,7 +49,7 @@ def post_comments_and_summary(review: dict, summary: dict) -> None:
                 logger.info(f"[{i}/{len(issues)}] Posting comment at {issue['file']}:{issue['line']}...")
                 comment_result = pr.create_review_comment(
                     body=comment_body,
-                    commit_id=pr.head.sha,
+                    commit=pr.head.sha,
                     path=issue['file'],
                     line=issue['line']
                 )
