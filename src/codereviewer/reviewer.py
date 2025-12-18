@@ -18,14 +18,18 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
             A dictionary containing the issues.
     """
     cwd = os.getcwd()
-    raw_review = None
+    review_file = "/tmp/review.json"
+    
+    # Remove any existing review file
+    if os.path.exists(review_file):
+        os.remove(review_file)
     
     async for message in query(
         prompt=get_complex_review_prompt(cwd, diff, summary),
         options=ClaudeAgentOptions(
             model="claude-haiku-4-5-20251001",
-            system_prompt="You are a fast code reviewer. Investigate quickly, then output JSON results. Your FINAL message must be pure JSON only - no explanation, no markdown.",
-            allowed_tools=["Write", "Grep", "Bash"],
+            system_prompt="You are a fast code reviewer. Investigate the code, then use the Write tool to save your findings to /tmp/review.json in JSON format. You must follow the turn limit instructions.",
+            allowed_tools=["Write", "Grep", "Bash", "Read"],
             permission_mode="acceptEdits",
             max_turns=15,
             cwd=cwd
@@ -50,9 +54,18 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
                         print(f"Total Turns: {message.num_turns}")
                     if hasattr(message, 'total_cost_usd'):
                         print(f"Total Cost: {message.total_cost_usd}")
-                    raw_review = message.result
     
-    # Parse Claude's JSON output with GPT-4o-mini for validation
+    # Read the review file written by Claude
+    raw_review = None
+    if os.path.exists(review_file):
+        with open(review_file, 'r') as f:
+            raw_review = f.read()
+        print(f"✅ Read review from {review_file}")
+    else:
+        print(f"⚠️ Warning: {review_file} not found, Claude may not have written findings")
+        raw_review = '{"issues": []}'
+    
+    # Parse Claude's JSON output with GPT-5-mini for validation
     llm = ChatOpenAI(model="gpt-5-mini")
     structured_llm = llm.with_structured_output(ReviewOutput)
     

@@ -9,8 +9,9 @@ Working directory: {cwd} (repo root)
 Review changes from the diff. The summary describes the intent of the changes at a high level. 
 Focus on finding issues not covered in the summary and high level flow breaks that are critical.
 
-CRITICAL: You have 12 turns MAX. Your FINAL response MUST be ONLY the JSON output specified below.
-Do NOT explain your findings in text - investigation is for gathering context, but your final output must be pure JSON.
+CRITICAL: You have 12 turns MAX. 
+After your investigation, you MUST write your findings to /tmp/review.json
+Use the Write tool to create this file with the JSON format specified below.
 </instructions>
 
 </steps>
@@ -37,7 +38,7 @@ Do NOT:
 </requirements>
 
 <output format>
-YOUR FINAL RESPONSE MUST BE ONLY THIS JSON (no markdown, no explanations, no code blocks):
+Write your findings to /tmp/review.json in this exact JSON format:
 {{
   "issues": [
     {{
@@ -51,12 +52,12 @@ YOUR FINAL RESPONSE MUST BE ONLY THIS JSON (no markdown, no explanations, no cod
   ]
 }}
 
-If no critical issues found, your final response must be:
+If no critical issues found, write to /tmp/review.json:
 {{
   "issues": []
 }}
 
-REMINDER: Your last message must be ONLY the JSON above. Nothing else.
+IMPORTANT: Use the Write tool to create /tmp/review.json with the JSON content above.
 </output format>
 """
 
