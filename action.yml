@@ -24,7 +24,7 @@ runs:
       run: python -m codereviewer
       shell: bash
       env:
-        CLAUDE_API_KEY: ${{ inputs.claude_api_key }}
+        ANTHROPIC_API_KEY: ${{ inputs.claude_api_key }}
         OPENAI_API_KEY: ${{ inputs.openai_api_key }}
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
