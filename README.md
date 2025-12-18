@@ -1,4 +1,4 @@
-# Code Reviewer
+# PR Code Reviewer
 
 AI-powered code review for GitHub PRs using Claude and OpenAI.
 

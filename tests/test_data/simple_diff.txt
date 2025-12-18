@@ -1,0 +1,13 @@
+diff --git a/utils.py b/utils.py
+index 1234567..abcdefg 100644
+--- a/utils.py
++++ b/utils.py
+@@ -1,5 +1,8 @@
+ def format_name(name):
+-    return name.title()
++    """Format a person's name to title case with whitespace trimmed."""
++    return name.strip().title()
++
++def get_greeting(name):
++    """Return a personalized greeting."""
++    return f"Hello, {format_name(name)}!"

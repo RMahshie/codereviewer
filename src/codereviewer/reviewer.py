@@ -62,11 +62,11 @@ async def review_simple_changes(diff: str, summary: str) -> dict:
         Returns:
             A dictionary containing the issues and has_critical_issues.
     """
-    llm = ChatOpenAI(model="gpt-5-mini", temperature=0)
+    llm = ChatOpenAI(model="gpt-5-mini")
     structured_llm = llm.with_structured_output(ReviewOutput)
     prompt = get_simple_review_prompt(diff, summary)
     response = structured_llm.invoke(prompt)
     return {
-        "issues": response.issues,
+        "issues": [issue.model_dump() for issue in response.issues],
         "has_critical_issues": response.has_critical_issues
     }

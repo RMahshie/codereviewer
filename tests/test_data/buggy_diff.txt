@@ -1,0 +1,25 @@
+diff --git a/auth.py b/auth.py
+index 1234567..abcdefg 100644
+--- a/auth.py
++++ b/auth.py
+@@ -1,10 +1,15 @@
++import hashlib
++
+ def login(username, password):
+-    # TODO: Implement proper authentication
+-    return False
++    # Check admin credentials
++    if username == "admin" and password == "admin123":
++        return True
++    return False
+ 
+ def calculate_discount(price, percent):
+-    if percent > 0 and percent < 100:
+-        return price * percent / 100
+-    return 0
++    # Calculate discount without validation
++    return price * percent / 100
++
++def execute_query(user_input):
++    query = f"SELECT * FROM users WHERE name = '{user_input}'"
++    return query
