@@ -1,63 +1,28 @@
 # planning straight up api call with the diff to chatgpt and very cheap for a general summary. give it some
 # structure so it knows how to make the output look nice and readable.
 
-import asyncio
-from claude_agent_sdk import query, ClaudeAgentOptions
-from claude_agent_sdk.types import AssistantMessage, ToolUseBlock, ResultMessage, TextBlock
-import os
+from langchain_openai import ChatOpenAI
+from .prompts import get_summarizer_prompt
+from .models import SummaryOutput
 
 
-if os.path.exists("result.md"):
-    os.remove("result.md")
-cwd = os.getcwd()
+async def summarize_changes(diff: str) -> dict:
+    """
+    Summarizes the changes in a pull request diff.
 
-async def summarize_changes():
-    async for message in query(
-prompt=f"""
-Working directory: /Users/rmahshie/Downloads/projects/lawsearchprod (repo root)
+    Args:
+        diff: The diff of the pull request.
 
-Review changes from commit 0071e88. Write findings to ./result.md (in repo root).
-You have exactly 6 turns to complete this task and write to result.md immediately.
-Steps:
-1. `git diff -U55 0071e88` (35 lines context included)
-2. For modified functions, `grep -rn "function_name" --include="*.py"` to find callers
-3. Write critical issues only to ./result.md
-Do NOT:
-- List files or explore structure
-- Read entire files
-- Include non-critical observations
-Output format (max 45 lines):
-## Critical Issues
-- [Issue]: [File:Line] - [Impact]
-""",
-        options=ClaudeAgentOptions(
-            model="claude-haiku-4-5-20251001",
-            system_prompt="You are a fast code reviewer. Complete reviews in 3 tool calls maximum. Do not over-investigate. Write findings immediately after seeing the diff.",
-            allowed_tools=["Write", "Grep", "Bash"],
-            permission_mode="acceptEdits",
-            max_turns=6,
-            cwd="/Users/rmahshie/Downloads/projects/lawsearchprod"
-        )
-    ):
-        if hasattr(message, 'data'):
-            print(f"Session ID: {message.data.get('session_id')}")
-            print(f"Model: {message.data.get('model')}")
+    Returns:
+        A dictionary containing the summary, has_critical_issues, and number_of_changes.
+    """
+    llm = ChatOpenAI(model="gpt-5-mini", temperature=0)
+    structured_llm = llm.with_structured_output(SummaryOutput)
+    prompt = get_summarizer_prompt(diff)
+    response = structured_llm.invoke(prompt)
+    return {
+        "summary": response.summary, 
+        "has_critical_issues": response.has_critical_issues, 
+        "number_of_changes": response.number_of_changes
+    }
 
-        if isinstance(message, AssistantMessage):
-            for block in message.content:
-                if isinstance(block, TextBlock):
-                    print(f"Response: {block.text}")
-                elif isinstance(block, ToolUseBlock):
-                    print(f"Tool used: {block.name}")
-                    print(f"Tool input: {block.input}")
-        
-        if isinstance(message, ResultMessage):
-                    print(f"Result: {message.result}")
-                    if hasattr(message, 'usage'):
-                        print(f"Usage: {message.usage}")
-                        print(f"Total Turns: {message.num_turns}")
-                    if hasattr(message, 'total_cost_usd'):
-                        print(f"Total Cost: {message.total_cost_usd}")
-
-
-asyncio.run(summarize_changes())
