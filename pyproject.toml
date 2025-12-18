@@ -1,5 +1,5 @@
 [project]
-name = "code-reviewer"
+name = "codereviewer"
 version = "0.1.0"
 description = "Github actions code reviewer using Claude SDK for complex changes and diff analysis using LangChain/ChatGPT api for smaller prs"
 requires-python = ">=3.13"
