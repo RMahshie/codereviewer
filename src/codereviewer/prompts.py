@@ -9,7 +9,7 @@ Working directory: {cwd} (repo root)
 Review changes from the diff. The summary describes the intent of the changes at a high level. 
 Focus on finding issues not covered in the summary and high level flow breaks that are critical.
 
-CRITICAL: You have 12 turns MAX. 
+CRITICAL: You have 15 turns MAX. YOU MUST FOLLOW THE TURN LIMIT INSTRUCTIONS.
 After your investigation, you MUST write your findings to /tmp/review.json
 Use the Write tool to create this file with the JSON format specified below.
 </instructions>
