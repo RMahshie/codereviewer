@@ -1,0 +1,31 @@
+name: 'Code Reviewer'
+description: 'AI-powered code review/summary for GitHub PRs'
+author: 'RMahshie'
+
+inputs:
+  claude_api_key:
+    description: 'Claude API key'
+    required: true
+  openai_api_key:
+    description: 'OpenAI API key'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      run: pip install -e .
+      shell: bash
+    - name: Run code review
+      run: python -m codereviewer
+      shell: bash
+      env:
+        CLAUDE_API_KEY: ${{ inputs.claude_api_key }}
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}

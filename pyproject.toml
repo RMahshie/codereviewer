@@ -1,0 +1,13 @@
+[project]
+name = "code-reviewer"
+version = "0.1.0"
+description = "Github actions code reviewer using Claude SDK for complex changes and diff analysis using LangChain/ChatGPT api for smaller prs"
+requires-python = ">=3.13"
+dependencies = [
+    "claude-agent-sdk",
+    "langchain",
+    "langchain-openai",
+    "pydantic",
+    "PyGithub"
+
+]
