@@ -1,10 +1,10 @@
 # PR Code Reviewer
 
-AI-powered code review for GitHub PRs using Claude and OpenAI.
+AI-powered code review for GitHub PRs using Claude (via Anthropic API) and OpenAI.
 
 ## Setup
 
-1. Add secrets to your repo: `CLAUDE_API_KEY` and `OPENAI_API_KEY`
+1. Add secrets to your repo: `ANTHROPIC_API_KEY` and `OPENAI_API_KEY`
 2. Create `.github/workflows/code-review.yml`:
 
 ```yaml
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: RMahshie/codeReviewer@v1
         with:
-          claude_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          claude_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
 ```
 
