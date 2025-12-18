@@ -35,6 +35,7 @@ Do NOT:
 - List files or explore structure
 - Read entire files
 - Include non-critical observations
+- Flag .github/workflows files that call this code review action (it's the expected usage pattern)
 </requirements>
 
 <output format>
