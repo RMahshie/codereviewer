@@ -9,7 +9,7 @@ Working directory: {cwd} (repo root)
 Review changes from the diff. The summary describes the intent of the changes at a high level. 
 Focus on finding issues not covered in the summary and high level flow breaks that are critical.
 Return a list of critical observations that need to be addressed.
-You have exactly 6 turns to complete this task and write to result.md immediately.
+You have exactly 8 turns to complete this task and return the results immediately.
 </instructions>
 
 </steps>
