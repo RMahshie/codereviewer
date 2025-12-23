@@ -59,3 +59,5 @@ dmypy.json
 
 # Jupyter
 .ipynb_checkpoints
+
+codereviewer.code-workspace

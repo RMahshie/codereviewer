@@ -4,7 +4,9 @@ import os
 from .prompts import get_complex_review_prompt, get_simple_review_prompt
 from .models import ReviewOutput
 from langchain_openai import ChatOpenAI
+import logging
 
+logger = logging.getLogger(__name__)
 
 async def review_commplex_changes(diff: str, summary: str) -> dict:
     """
@@ -36,33 +38,32 @@ async def review_commplex_changes(diff: str, summary: str) -> dict:
         )
     ):
         if hasattr(message, 'data'):
-            print(f"Session ID: {message.data.get('session_id')}")
-            print(f"Model: {message.data.get('model')}")
+            logger.debug(f"Session ID: {message.data.get('session_id')}")
+            logger.debug(f"Model: {message.data.get('model')}")
 
         if isinstance(message, AssistantMessage):
             for block in message.content:
                 if isinstance(block, TextBlock):
-                    print(f"Response: {block.text}")
+                    logger.debug(f"Response: {block.text}")
                 elif isinstance(block, ToolUseBlock):
-                    print(f"Tool used: {block.name}")
-                    print(f"Tool input: {block.input}")
+                    logger.debug(f"Tool used: {block.name}")
+                    logger.debug(f"Tool input: {block.input}")
         
         if isinstance(message, ResultMessage):
-                    print(f"Result: {message.result}")
-                    if hasattr(message, 'usage'):
-                        print(f"Usage: {message.usage}")
-                        print(f"Total Turns: {message.num_turns}")
-                    if hasattr(message, 'total_cost_usd'):
-                        print(f"Total Cost: {message.total_cost_usd}")
+            logger.info(f"Total Turns: {message.num_turns}")
+            if hasattr(message, 'usage'):
+                logger.debug(f"Usage: {message.usage}")
+            if hasattr(message, 'total_cost_usd'):
+                logger.info(f"Total Cost: ${message.total_cost_usd:.4f}")
     
     # Read the review file written by Claude
     raw_review = None
     if os.path.exists(review_file):
         with open(review_file, 'r') as f:
             raw_review = f.read()
-        print(f"✅ Read review from {review_file}")
+        logger.info(f"Read review from {review_file}")
     else:
-        print(f"⚠️ Warning: {review_file} not found, Claude may not have written findings")
+        logger.warning(f"{review_file} not found, Claude may not have written findings")
         raw_review = '{"issues": []}'
     
     # Parse Claude's JSON output with GPT-5-mini for validation
