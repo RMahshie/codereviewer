@@ -74,20 +74,25 @@ Review this pull request diff.
 
 Report issues that would cause bugs, crashes, security vulnerabilities, or significant maintainability problems.
 
+For each issue, provide:
+- category: Security, Logic, Complexity, etc.
+- file: the filename
+- line: line number
+- issue: what's wrong
+- impact: what could go wrong if not fixed
+- recommendation: how to fix it
+
 Examples of what to report:
-- Security: auth.py:14 - SQL injection via f-string: user input directly in query
-- Logic: utils.py:23 - Division without zero check will crash
-- Complexity: service.py:45 - 150-line function with 8 nested conditions, hard to maintain
+- SQL injection via f-string with user input
+- Division without zero check
+- 150-line function with deeply nested conditions
 
 Examples of what NOT to report:
-- "Variable 'x' could be more descriptive" (minor naming)
-- "Consider adding type hints" (enhancement, not issue)
-- "Unused import" (unless it indicates a missing implementation)
+- Minor naming improvements
+- Missing type hints
+- Unused imports (unless indicating missing implementation)
 
-If no real issues, say "No issues found."
-
-Format:
-- [Category]: [File:Line] - [Issue and why it matters]
+If no real issues exist, return an empty issues list.
 """
 
 
@@ -98,10 +103,44 @@ Summarize this pull request diff.
 ## Diff
 {diff}
 
-Provide:
-1. A 2-3 sentence overview of what this PR does
-2. Data flow changes (if any): how data moves differently through the system now
-3. Key files affected and why they matter
+Output this exact format:
 
-Keep it concise. This summary will be used as context for a detailed code review.
+## [Verb] + [What] (e.g., "Add user authentication", "Fix cart calculation bug")
+
+**What:** One sentence on what this PR accomplishes.
+
+**Why:** One sentence on the motivation or problem solved.
+
+### Changes
+- **[filename]**: [what changed and why it matters]
+- **[filename]**: [what changed and why it matters]
+
+### Flow Impact
+```mermaid
+flowchart LR
+    A[Component] --> B[Component]
+    B --> C[Component]
+```
+(Only include if data flow changed. Otherwise write "No flow changes.")
+
+Example output:
+
+## Add thinking speed parameter to RAG queries
+
+**What:** Allows users to select quick/normal/long processing modes that adjust model and retrieval settings.
+
+**Why:** Gives users control over response speed vs quality tradeoff.
+
+### Changes
+- **rag_service.py**: Added `create_llm_for_speed()` to select models based on speed setting
+- **query.py**: Added `thinking_speed` field to QueryRequest model
+- **ThinkingSpeedSelector.tsx**: New component for speed selection UI
+
+### Flow Impact
+```mermaid
+flowchart LR
+    UI[ThinkingSpeedSelector] --> API[QueryRequest]
+    API --> RAG[create_llm_for_speed]
+    RAG --> LLM[Model Selection]
+```
 """
