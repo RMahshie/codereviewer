@@ -116,31 +116,53 @@ Output this exact format:
 - **[filename]**: [what changed and why it matters]
 
 ### Flow Impact
-```mermaid
-flowchart LR
-    A[Component] --> B[Component]
-    B --> C[Component]
-```
-(Only include if data flow changed. Otherwise write "No flow changes.")
+Show how NEW components connect to EXISTING ones. Mark new components.
+
+Use:
+- Solid arrows for existing connections
+- Dashed arrows or "new" labels for new connections
+- Subgraphs to group new vs existing
+- Only show components relevant to this PR
+
+If no architectural change (just bug fix, refactor), write "No flow changes."
 
 Example output:
 
-## Add thinking speed parameter to RAG queries
+## Add webhook notification system for order events
 
-**What:** Allows users to select quick/normal/long processing modes that adjust model and retrieval settings.
+**What:** Adds a webhook dispatcher that sends HTTP notifications when orders are created, updated, or cancelled.
 
-**Why:** Gives users control over response speed vs quality tradeoff.
+**Why:** Enables third-party integrations (Slack, inventory systems) to react to order events in real-time.
 
 ### Changes
-- **rag_service.py**: Added `create_llm_for_speed()` to select models based on speed setting
-- **query.py**: Added `thinking_speed` field to QueryRequest model
-- **ThinkingSpeedSelector.tsx**: New component for speed selection UI
+- **webhook_dispatcher.py** (new): Core dispatcher with retry logic, signature verification, and async HTTP client
+- **order_service.py**: Emits events to dispatcher after order state changes
+- **config.py**: Added webhook URL and secret configuration options
+- **test_webhooks.py** (new): Tests for dispatcher, retry behavior, and signature generation
 
 ### Flow Impact
 ```mermaid
 flowchart LR
-    UI[ThinkingSpeedSelector] --> API[QueryRequest]
-    API --> RAG[create_llm_for_speed]
-    RAG --> LLM[Model Selection]
+    subgraph Existing
+        API[Order API]
+        Svc[OrderService]
+        DB[(Database)]
+    end
+    subgraph New
+        WH[WebhookDispatcher]
+        Retry[RetryQueue]
+    end
+    API --> Svc
+    Svc --> DB
+    Svc -.->|"emit events"| WH
+    WH -.-> Retry
+    WH -.->|"POST /webhook"| External[External Services]
 ```
+
+Mermaid Guidelines:
+- Solid arrows (-->) = existing data flow
+- Dashed arrows (-..->) = new connections added by this PR  
+- Only include components touched or connected by this PR
+- New modules go in "New" subgraph, modified existing in "Existing"
+- Show the integration point clearly (where new meets existing)
 """
